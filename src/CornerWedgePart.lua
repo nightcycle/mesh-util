@@ -1,12 +1,17 @@
 --!strict
-local types = require(script.Parent.Parent.Types)
-type Point = types.Point
-type Vertex = types.Vertex
-type Normal = types.Normal
-type Axis = types.Axis
-type Line = types.Line
-type Surface = types.Surface
-type Radian = types.Radian
+local Package = script.Parent
+local Packages = Package.Parent
+
+-- Packages
+local GeometryUtil = require(Packages:WaitForChild("GeometryUtil"))
+
+type Point = GeometryUtil.Point
+type Vertex = GeometryUtil.Vertex
+type Normal = GeometryUtil.Normal
+type Axis = GeometryUtil.Axis
+type Line = GeometryUtil.Line
+type Surface = GeometryUtil.Surface
+type Radian = GeometryUtil.Radian
 
 local normals: {[string]: Enum.NormalId} = {
 	Top = Enum.NormalId.Top,

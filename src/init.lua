@@ -1,18 +1,24 @@
 --!strict
-export type Point = Vector3
-export type Vertex = Point
-export type Normal = Vector3
-export type Axis = Normal
-export type Line = {[number]: Vertex}
-export type Surface = {
-	Normal: Normal,
-	Lines: { [number]: Line },
-}
+local Package = script
+local Packages = Package.Parent
 
+-- Packages
+local GeometryUtil = require(Packages:WaitForChild("GeometryUtil"))
+
+-- Solver
 local PartSolver = require(script:WaitForChild("Part"))
 local WedgePartSolver = require(script:WaitForChild("WedgePart"))
 local TetraPartSolver = require(script:WaitForChild("TetraPart"))
 local CornerWedgePartSolver = require(script:WaitForChild("CornerWedgePart"))
+
+-- Types
+export type Point = GeometryUtil.Point
+export type Vertex = GeometryUtil.Vertex
+export type Normal = GeometryUtil.Normal
+export type Axis = GeometryUtil.Axis
+export type Line = GeometryUtil.Line
+export type Surface = GeometryUtil.Surface
+export type Grid = {[Vector3]: boolean}
 
 --- @class Mesh
 --- A basic utility for translating meshes into geometry useful elements. Does not currently support CSG or most user-imported meshes.
@@ -96,16 +102,16 @@ function Mesh.renderTriangle(a: Point, b: Point, c: Point, thickness: number): (
 end
 
 --- Performs a greedy mesh style simplification on a 3d table of boolean values
-function Mesh.solveGreedyMesh(grid: { [Vector3]: boolean })
+function Mesh.solveGreedyMesh(grid: Grid): {[number]: {[number]: Vector3}}
 	-- print("Grid", grid)
 	local registry = {}
 	local regions = {}
-	for c3, _ in pairs(grid) do
+	for c3, v in pairs(grid) do
 		-- print("C3", c3)
-		if registry[c3] == nil then
+		if registry[c3] == nil and v == true then
 			-- print("No registry entry")
 			local function try(newC3)
-				if grid[newC3] ~= nil and registry[newC3] == nil then
+				if grid[newC3] == true and registry[newC3] == nil then
 					return true
 				else
 					return false
@@ -183,6 +189,7 @@ function Mesh.solveGreedyMesh(grid: { [Vector3]: boolean })
 
 	return regions
 end
+
 
 --- Generates a smallish bounding box at cframe that contains all the parts without the need for a model.
 function Mesh.getBoundingBoxAtCFrame(orientation: CFrame, parts: { [number]: BasePart })
