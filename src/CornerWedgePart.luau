@@ -1,4 +1,5 @@
 --!strict
+--!native
 local Package = script.Parent
 local Packages = Package.Parent
 
