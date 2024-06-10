@@ -1,2 +1,2 @@
-# package
-A basic template for whenever I make a wally package
+# mesh-util
+A handful of scripts breaking down the geometry of standard Roblox meshes
